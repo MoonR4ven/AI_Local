@@ -33,15 +33,13 @@ export const useOllama = () => {
     clearSearch
   } = useWebSearch();
 
-  // Read settings from localStorage or environment (for Netlify)
+  // Get settings (uses proxy URL if deployed)
   const getSettings = useCallback((): OllamaSettings => {
     try {
       const savedSettings = JSON.parse(localStorage.getItem('ollama-settings') || '{}');
 
-      // Use environment variable first, fallback to localStorage, fallback to localhost
-
-   const apiUrl = import.meta.env.VITE_OLLAMA_API_URL || '/.netlify/functions/ollamaProxy';
-
+      const apiUrl =
+        import.meta.env.VITE_OLLAMA_API_URL || '/.netlify/functions/ollamaProxy';
 
       return {
         apiUrl,
@@ -53,8 +51,7 @@ export const useOllama = () => {
       };
     } catch {
       return {
-        apiUrl: import.meta.env.VITE_OLLAMA_API_URL
-        ,
+        apiUrl: import.meta.env.VITE_OLLAMA_API_URL || '/.netlify/functions/ollamaProxy',
         enableWebSearch: false,
         googleApiKey: '',
         googleSearchEngineId: '',
@@ -64,22 +61,21 @@ export const useOllama = () => {
     }
   }, []);
 
-// Initialize web search when settings change
-useEffect(() => {
-  const settings = getSettings();
-  if (settings.enableWebSearch && settings.googleApiKey && settings.googleSearchEngineId) {
-    initializeSearch(settings.googleApiKey, settings.googleSearchEngineId);
-  }
-  console.log("Using Ollama API URL:", settings.apiUrl); // ✅ now inside useEffect
-}, [initializeSearch, getSettings]);
-
+  // Initialize web search when settings change
+  useEffect(() => {
+    const settings = getSettings();
+    if (settings.enableWebSearch && settings.googleApiKey && settings.googleSearchEngineId) {
+      initializeSearch(settings.googleApiKey, settings.googleSearchEngineId);
+    }
+    console.log("Using Ollama API URL:", settings.apiUrl);
+  }, [initializeSearch, getSettings]);
 
   // Fetch available models
   const fetchModels = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const settings = getSettings();  // <-- add this
+      const settings = getSettings();
       const response = await fetch(`${settings.apiUrl}/api/tags`);
       if (!response.ok) throw new Error(`Ollama API error: ${response.statusText}`);
 
@@ -93,7 +89,6 @@ useEffect(() => {
       setIsLoading(false);
     }
   }, [getSettings]);
-
 
   // Send messages to a model with optional web search
   const sendMessage = useCallback(
@@ -124,7 +119,6 @@ useEffect(() => {
           }
         }
 
-      
         const response = await fetch(`${settings.apiUrl}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -162,7 +156,6 @@ useEffect(() => {
     isLoading: isLoading || isSearching,
     error: error || searchError,
     searchContext,
-    apiUrl: getSettings().apiUrl, // <-- add this
+    apiUrl: getSettings().apiUrl
   };
-
 };
