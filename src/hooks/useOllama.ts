@@ -43,7 +43,8 @@ export const useOllama = () => {
 const apiUrl =
   import.meta.env.VITE_OLLAMA_API_URL ||
   savedSettings.apiUrl ||
-  'http://localhost:11434';
+  import.meta.env.VITE_OLLAMA_API_URL
+;
 
       return {
         apiUrl,
@@ -55,7 +56,8 @@ const apiUrl =
       };
     } catch {
       return {
-        apiUrl: 'http://localhost:11434',
+        apiUrl: import.meta.env.VITE_OLLAMA_API_URL
+,
         enableWebSearch: false,
         googleApiKey: '',
         googleSearchEngineId: '',

@@ -135,7 +135,8 @@ getSettings: (): Settings => {
     const defaultSettings: Settings = {
       // General
       theme: 'system',
-      apiUrl: 'http://localhost:11434',
+      apiUrl: import.meta.env.VITE_OLLAMA_API_URL
+,
       apiKey: '',
 
       // Model Parameters
@@ -223,7 +224,8 @@ getSettings: (): Settings => {
     return {
       // copy the same object here as above
       theme: 'system',
-      apiUrl: 'http://localhost:11434',
+      apiUrl: import.meta.env.VITE_OLLAMA_API_URL
+,
       apiKey: '',
 
       maxTokens: 2048,

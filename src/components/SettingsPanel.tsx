@@ -35,7 +35,8 @@ interface SettingsPanelProps {
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
   const [settings, setSettings] = useState<Settings>({
     theme: 'system',
-    apiUrl: 'http://localhost:11434',
+    apiUrl: import.meta.env.VITE_OLLAMA_API_URL
+,
     apiKey: '',
     maxTokens: 2048,
     temperature: 0.7,
@@ -140,7 +141,8 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
 
       const defaultSettings: Settings = {
         theme: 'system',
-        apiUrl: 'http://localhost:11434',
+        apiUrl: import.meta.env.VITE_OLLAMA_API_URL
+,
         apiKey: '',
         maxTokens: 2048,
         temperature: 0.7,
