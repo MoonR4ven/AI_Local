@@ -40,10 +40,10 @@ export const useOllama = () => {
 
       // Use environment variable first, fallback to localStorage, fallback to localhost
 
-const apiUrl =
-  import.meta.env.VITE_OLLAMA_API_URL ||
-  savedSettings.apiUrl ||
-  'http://localhost:11434';
+      const apiUrl =
+        import.meta.env.VITE_OLLAMA_API_URL ||
+        savedSettings.apiUrl ||
+        'http://localhost:11434';
 
 
       return {
@@ -57,7 +57,7 @@ const apiUrl =
     } catch {
       return {
         apiUrl: import.meta.env.VITE_OLLAMA_API_URL || 'http://localhost:11434'
-,
+        ,
         enableWebSearch: false,
         googleApiKey: '',
         googleSearchEngineId: '',
@@ -82,6 +82,8 @@ const apiUrl =
     try {
       const settings = getSettings();
       const response = await fetch(`${settings.apiUrl}/api/tags`);
+      const text = await response.text();
+      console.log('Ollama /api/tags response:', text);
       if (!response.ok) throw new Error(`Ollama API error: ${response.statusText}`);
 
       const data: ModelResponse = await response.json();
