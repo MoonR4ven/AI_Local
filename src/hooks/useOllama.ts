@@ -39,10 +39,11 @@ export const useOllama = () => {
       const savedSettings = JSON.parse(localStorage.getItem('ollama-settings') || '{}');
 
       // Use environment variable first, fallback to localStorage, fallback to localhost
-      const apiUrl =
-        (process.env.REACT_APP_OLLAMA_API_URL as string) ||
-        savedSettings.apiUrl ||
-        'http://localhost:11434';
+
+const apiUrl =
+  import.meta.env.VITE_OLLAMA_API_URL ||
+  savedSettings.apiUrl ||
+  'http://localhost:11434';
 
       return {
         apiUrl,
