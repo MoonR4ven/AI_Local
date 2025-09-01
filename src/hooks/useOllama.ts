@@ -40,11 +40,8 @@ export const useOllama = () => {
 
       // Use environment variable first, fallback to localStorage, fallback to localhost
 
-const apiUrl =
-  import.meta.env.VITE_OLLAMA_API_URL ||
-  savedSettings.apiUrl ||
-  import.meta.env.VITE_OLLAMA_API_URL
-;
+   const apiUrl = import.meta.env.VITE_OLLAMA_API_URL || '/.netlify/functions/ollamaProxy';
+
 
       return {
         apiUrl,
@@ -57,7 +54,7 @@ const apiUrl =
     } catch {
       return {
         apiUrl: import.meta.env.VITE_OLLAMA_API_URL
-,
+        ,
         enableWebSearch: false,
         googleApiKey: '',
         googleSearchEngineId: '',
@@ -67,20 +64,22 @@ const apiUrl =
     }
   }, []);
 
-  // Initialize web search when settings change
-  useEffect(() => {
-    const settings = getSettings();
-    if (settings.enableWebSearch && settings.googleApiKey && settings.googleSearchEngineId) {
-      initializeSearch(settings.googleApiKey, settings.googleSearchEngineId);
-    }
-  }, [initializeSearch, getSettings]);
+// Initialize web search when settings change
+useEffect(() => {
+  const settings = getSettings();
+  if (settings.enableWebSearch && settings.googleApiKey && settings.googleSearchEngineId) {
+    initializeSearch(settings.googleApiKey, settings.googleSearchEngineId);
+  }
+  console.log("Using Ollama API URL:", settings.apiUrl); // ✅ now inside useEffect
+}, [initializeSearch, getSettings]);
+
 
   // Fetch available models
   const fetchModels = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const settings = getSettings();
+      const settings = getSettings();  // <-- add this
       const response = await fetch(`${settings.apiUrl}/api/tags`);
       if (!response.ok) throw new Error(`Ollama API error: ${response.statusText}`);
 
@@ -94,6 +93,7 @@ const apiUrl =
       setIsLoading(false);
     }
   }, [getSettings]);
+
 
   // Send messages to a model with optional web search
   const sendMessage = useCallback(
@@ -124,6 +124,7 @@ const apiUrl =
           }
         }
 
+      
         const response = await fetch(`${settings.apiUrl}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -160,6 +161,8 @@ const apiUrl =
     models,
     isLoading: isLoading || isSearching,
     error: error || searchError,
-    searchContext
+    searchContext,
+    apiUrl: getSettings().apiUrl, // <-- add this
   };
+
 };

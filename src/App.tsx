@@ -4,6 +4,7 @@ import { storage } from './utils/storage';
 import { Sidebar } from './components/Sidebar';
 import { Chat as ChatComponent } from './components/Chat';
 import { Menu, MessageSquare } from 'lucide-react';
+import { useOllama } from './hooks/useOllama';
 
 function App() {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -12,11 +13,17 @@ function App() {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [models, setModels] = useState<ModelInfo[]>([]);
 
+  const {  isLoading, error, sendMessage, apiUrl } = useOllama();
+
+  useEffect(() => {
+    console.log("Using Ollama API URL:", apiUrl);
+  }, [apiUrl]);
+
   // Apply theme settings
   useEffect(() => {
     const applyTheme = () => {
       const settings = storage.getSettings();
-      const darkMode = settings.theme === 'dark' || 
+      const darkMode = settings.theme === 'dark' ||
         (settings.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
       document.documentElement.classList.toggle('dark', darkMode);
     };
