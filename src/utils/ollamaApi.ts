@@ -54,6 +54,17 @@ class OllamaApi {
       return [];
     }
   }
+    async deleteModel(modelName: string): Promise<void> {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/models/${modelName}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error(`Failed to delete model ${modelName}`);
+    } catch (err) {
+      console.error('Failed to delete model:', err);
+      throw err;
+    }
+  }
 
   async pullModel(modelName: string, onProgress?: ProgressCallback): Promise<void> {
     if (!this.downloads[modelName]) {

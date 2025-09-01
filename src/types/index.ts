@@ -5,6 +5,16 @@ export interface Message {
     content: string;
     timestamp: Date;
 }
+export interface ModelParameters {
+  maxTokens: number;
+  temperature: number;
+  topP: number;
+  topK: number;
+  repeatPenalty: number;
+  frequencyPenalty: number;
+  presencePenalty: number;
+}
+
 
 export interface Chat {
     id: string;
@@ -56,7 +66,7 @@ export interface Settings {
   enableStreaming: boolean;
   enableMemory: boolean;
   enableSearch: boolean;
-  enableWebSearch: boolean;
+
   enableFileUpload: boolean;
   enableImageGeneration: boolean;
   enableVoiceInput: boolean;

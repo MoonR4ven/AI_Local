@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Chat, ModelInfo } from '../types';
+import { Chat, ModelInfo } from '../types/index';
 import { storage } from '../utils/storage';
 import { ollamaApi } from '../utils/ollamaApi';
 import { NewChatButton } from './NewChatButton';
@@ -25,6 +25,7 @@ interface SidebarProps {
   onDeleteChat: (chatId: string) => void;
   onModelSelect: (modelName: string) => void;
   selectedModel: string | null;
+  onModelDownloaded?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, ModelParameters } from '../types';
+import { Settings, ModelParameters } from '../types/index';
 import { storage } from '../utils/storage';
 import {
   Search,
@@ -47,12 +47,13 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
     systemPrompt: 'You are a helpful assistant.',
     model: '',
     timeout: 300,
+
     maxContextLength: 4096,
     enableStreaming: true,
     enableMemory: true,
     enableSearch: false,
     enableWebSearch: false,
-    googleApiKey: '', // Add default values for new settings
+    googleApiKey: '',
     googleSearchEngineId: '',
     maxSearchResults: 3,
     searchTimeout: 10,
@@ -136,6 +137,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
 
   const handleReset = () => {
     if (confirm('Are you sure you want to reset all settings to default?')) {
+
       const defaultSettings: Settings = {
         theme: 'system',
         apiUrl: 'http://localhost:11434',
@@ -195,7 +197,13 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
         enableSessionTimeout: false,
         sessionTimeout: 60,
         enablePasswordPolicy: false,
-        enableAuditLog: false
+        enableAuditLog: false,
+        // Web Search (missing fields)
+   
+        googleApiKey: '',             // ← add this
+        googleSearchEngineId: '',     // ← add this
+        maxSearchResults: 3,          // ← add this
+        searchTimeout: 10,            // ← add this
       };
       setSettings(defaultSettings);
     }

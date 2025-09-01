@@ -126,33 +126,177 @@ export const storage = {
   },
 
   // Settings management
-  getSettings: (): Settings => {
-    try {
-      const settings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-      if (settings) return JSON.parse(settings);
-      
-      // Return default settings if none exist
-      const defaultSettings: Settings = {
-        theme: 'system',
-        apiUrl: 'http://localhost:11434',
-        maxTokens: 2048,
-        temperature: 0.7,
-        systemPrompt: 'You are a helpful assistant.'
-      };
-      
-      storage.saveSettings(defaultSettings);
-      return defaultSettings;
-    } catch {
-      const defaultSettings: Settings = {
-        theme: 'system',
-        apiUrl: 'http://localhost:11434',
-        maxTokens: 2048,
-        temperature: 0.7,
-        systemPrompt: 'You are a helpful assistant.'
-      };
-      return defaultSettings;
-    }
-  },
+getSettings: (): Settings => {
+  try {
+    const settings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (settings) return JSON.parse(settings);
+
+    // Full default settings object
+    const defaultSettings: Settings = {
+      // General
+      theme: 'system',
+      apiUrl: 'http://localhost:11434',
+      apiKey: '',
+
+      // Model Parameters
+      maxTokens: 2048,
+      temperature: 0.7,
+      topP: 1,
+      topK: 50,
+      repeatPenalty: 1,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+      systemPrompt: 'You are a helpful assistant.',
+      model: 'llama3.2:3b',
+
+      // Performance
+      timeout: 30,
+      maxContextLength: 2048,
+
+      // Features
+      enableStreaming: true,
+      enableMemory: true,
+      enableSearch: false,
+      enableFileUpload: false,
+      enableImageGeneration: false,
+      enableVoiceInput: false,
+      enableVoiceOutput: false,
+      enableCodeExecution: false,
+      enablePlugins: false,
+
+      // Notifications & Updates
+      enableNotifications: true,
+      enableAutoUpdates: false,
+      enableTelemetry: true,
+      enableExperimentalFeatures: false,
+
+      // Appearance
+      language: 'en',
+      fontSize: 14,
+      fontFamily: 'Arial',
+      uiScale: 1,
+      animationSpeed: 'normal',
+      enableSyntaxHighlighting: true,
+      enableLineNumbers: true,
+      enableWordWrap: true,
+      enableSpellCheck: true,
+      enableAutoComplete: true,
+      enableQuickActions: true,
+      enableTooltips: true,
+      enableKeyboardShortcuts: true,
+
+      // Data & Storage
+      backupFrequency: 'weekly',
+      exportFormat: 'json',
+      enableCloudSync: false,
+      cloudSyncProvider: 'none',
+      enableLocalStorage: true,
+      enableIndexedDB: false,
+
+      // Web Search
+      enableWebSearch: false,
+      googleApiKey: '',
+      googleSearchEngineId: '',
+      maxSearchResults: 3,
+      searchTimeout: 10,
+
+      // Privacy & Security
+      privacyLevel: 'standard',
+      dataRetention: '30days',
+      enableModeration: true,
+      enableContentFilter: true,
+      enableRateLimiting: true,
+      enableIPFiltering: false,
+      enableAuth: false,
+      enable2FA: false,
+      enableSessionTimeout: false,
+      sessionTimeout: 15,
+      enablePasswordPolicy: false,
+      enableAuditLog: false
+    };
+
+    storage.saveSettings(defaultSettings);
+    return defaultSettings;
+
+  } catch {
+    // Return the same full defaults even if localStorage fails
+    return {
+      // copy the same object here as above
+      theme: 'system',
+      apiUrl: 'http://localhost:11434',
+      apiKey: '',
+
+      maxTokens: 2048,
+      temperature: 0.7,
+      topP: 1,
+      topK: 50,
+      repeatPenalty: 1,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+      systemPrompt: 'You are a helpful assistant.',
+      model: 'llama3.2:3b',
+
+      timeout: 30,
+      maxContextLength: 2048,
+
+      enableStreaming: true,
+      enableMemory: true,
+      enableSearch: false,
+      enableFileUpload: false,
+      enableImageGeneration: false,
+      enableVoiceInput: false,
+      enableVoiceOutput: false,
+      enableCodeExecution: false,
+      enablePlugins: false,
+
+      enableNotifications: true,
+      enableAutoUpdates: false,
+      enableTelemetry: true,
+      enableExperimentalFeatures: false,
+
+      language: 'en',
+      fontSize: 14,
+      fontFamily: 'Arial',
+      uiScale: 1,
+      animationSpeed: 'normal',
+      enableSyntaxHighlighting: true,
+      enableLineNumbers: true,
+      enableWordWrap: true,
+      enableSpellCheck: true,
+      enableAutoComplete: true,
+      enableQuickActions: true,
+      enableTooltips: true,
+      enableKeyboardShortcuts: true,
+
+      backupFrequency: 'weekly',
+      exportFormat: 'json',
+      enableCloudSync: false,
+      cloudSyncProvider: 'none',
+      enableLocalStorage: true,
+      enableIndexedDB: false,
+
+      enableWebSearch: false,
+      googleApiKey: '',
+      googleSearchEngineId: '',
+      maxSearchResults: 3,
+      searchTimeout: 10,
+
+      privacyLevel: 'standard',
+      dataRetention: '30days',
+      enableModeration: true,
+      enableContentFilter: true,
+      enableRateLimiting: true,
+      enableIPFiltering: false,
+      enableAuth: false,
+      enable2FA: false,
+      enableSessionTimeout: false,
+      sessionTimeout: 15,
+      enablePasswordPolicy: false,
+      enableAuditLog: false
+    };
+  }
+},
+
 
   saveSettings: (settings: Settings): void => {
     try {

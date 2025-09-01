@@ -3,11 +3,24 @@ import { useState, useCallback, useEffect } from 'react';
 import { Message } from '../types';
 import { useWebSearch } from './useWebSearch';
 
+interface OllamaSettings {
+  apiUrl: string;
+  enableWebSearch: boolean;
+  googleApiKey: string;
+  googleSearchEngineId: string;
+  maxSearchResults: number;
+  searchTimeout: number;
+}
+
+interface ModelResponse {
+  models: { name: string }[];
+}
+
 export const useOllama = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [models, setModels] = useState<string[]>([]);
-  
+
   const {
     isSearching,
     searchError,
@@ -20,8 +33,7 @@ export const useOllama = () => {
     clearSearch
   } = useWebSearch();
 
-  // Get settings with defaults
-  const getSettings = () => {
+  const getSettings = useCallback((): OllamaSettings => {
     try {
       const savedSettings = JSON.parse(localStorage.getItem('ollama-settings') || '{}');
       return {
@@ -42,7 +54,7 @@ export const useOllama = () => {
         searchTimeout: 10
       };
     }
-  };
+  }, []);
 
   // Initialize web search when settings change
   useEffect(() => {
@@ -50,7 +62,7 @@ export const useOllama = () => {
     if (settings.enableWebSearch && settings.googleApiKey && settings.googleSearchEngineId) {
       initializeSearch(settings.googleApiKey, settings.googleSearchEngineId);
     }
-  }, [initializeSearch]);
+  }, [initializeSearch, getSettings]);
 
   // Fetch available models
   const fetchModels = useCallback(async () => {
@@ -59,13 +71,10 @@ export const useOllama = () => {
     try {
       const settings = getSettings();
       const response = await fetch(`${settings.apiUrl}/api/tags`);
+      if (!response.ok) throw new Error(`Ollama API error: ${response.statusText}`);
 
-      if (!response.ok) {
-        throw new Error(`Ollama API error: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      setModels(data.models?.map((model: any) => model.name) || []);
+      const data: ModelResponse = await response.json();
+      setModels(data.models?.map(model => model.name) || []);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
@@ -73,9 +82,9 @@ export const useOllama = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [getSettings]);
 
-  // Send messages to a model with web search integration
+  // Send messages to a model with optional web search
   const sendMessage = useCallback(
     async (messages: Message[], model: string): Promise<string> => {
       setIsLoading(true);
@@ -83,49 +92,38 @@ export const useOllama = () => {
       clearSearch();
 
       try {
+        if (!messages.length) throw new Error('No messages to send');
+
         const settings = getSettings();
         const lastMessage = messages[messages.length - 1].content;
 
         let finalMessages = messages;
         let searchResults: any[] = [];
 
-        // Check if we should perform a web search
         if (settings.enableWebSearch && shouldUseSearch(lastMessage)) {
           const searchQuery = extractSearchQuery(lastMessage);
           searchResults = await performSearch(searchQuery, settings.maxSearchResults);
-          
-          if (searchResults.length > 0) {
+
+          if (searchResults.length) {
             const searchPrompt = formatSearchPrompt(searchQuery, searchResults);
             finalMessages = [
               ...messages.slice(0, -1),
-              {
-                ...messages[messages.length - 1],
-                content: searchPrompt
-              }
+              { ...messages[messages.length - 1], content: searchPrompt }
             ];
           }
         }
 
-        const requestBody = {
-          model,
-          messages: finalMessages.map(msg => ({ 
-            role: msg.role, 
-            content: msg.content 
-          })),
-          stream: false,
-        };
-
         const response = await fetch(`${settings.apiUrl}/api/chat`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            messages: finalMessages.map(msg => ({ role: msg.role, content: msg.content })),
+            stream: false
+          })
         });
 
-        if (!response.ok) {
-          throw new Error(`Ollama API error: ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`Ollama API error: ${response.statusText}`);
 
         const data = await response.json();
         return data.message.content;
@@ -138,20 +136,19 @@ export const useOllama = () => {
         setIsLoading(false);
       }
     },
-    [performSearch, shouldUseSearch, extractSearchQuery, formatSearchPrompt, clearSearch]
+    [clearSearch, getSettings, performSearch, shouldUseSearch, extractSearchQuery, formatSearchPrompt]
   );
 
-  // Auto-fetch models on mount
   useEffect(() => {
     fetchModels();
   }, [fetchModels]);
 
-  return { 
-    sendMessage, 
-    fetchModels, 
-    models, 
-    isLoading: isLoading || isSearching, // Combine loading states
+  return {
+    sendMessage,
+    fetchModels,
+    models,
+    isLoading: isLoading || isSearching,
     error: error || searchError,
-    searchContext 
+    searchContext
   };
 };
