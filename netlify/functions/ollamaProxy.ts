@@ -1,7 +1,7 @@
 import type { Handler } from '@netlify/functions';
 
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
-const NGROK_URL = process.env.NGROK_URL || 'https://your-ngrok-url.ngrok-free.app';
+const NGROK_URL = process.env.NGROK_URL ||  'https://your-ngrok-url.ngrok-free.app';
 
 export const handler: Handler = async (event, context) => {
   try {
