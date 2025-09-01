@@ -82,36 +82,48 @@ export const useOllama = () => {
     }
   }, [getSettings]);
 
-  // Update fetchModels to handle errors better
-  const fetchModels = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+// Add this function to check if response is JSON
+const isJsonResponse = (response: Response) => {
+  const contentType = response.headers.get('content-type');
+  return contentType && contentType.includes('application/json');
+};
 
-    const isOnline = await checkApiStatus();
-    if (!isOnline) {
-      setError('Ollama API is offline. Please check your connection.');
-      setIsLoading(false);
-      return;
+// Update fetchModels function
+const fetchModels = useCallback(async () => {
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const settings = getSettings();
+    console.log('Fetching models from:', `${settings.apiUrl}/api/tags`);
+    
+    const response = await fetch(`${settings.apiUrl}/api/tags`, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status} ${response.statusText}`);
     }
 
-    try {
-      const settings = getSettings();
-      const response = await fetch(`${settings.apiUrl}/api/tags`, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (!response.ok) throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
-
-      const data: ModelResponse = await response.json();
-      setModels(data.models?.map(model => model.name) || []);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
-      console.error('Failed to fetch models:', err);
-    } finally {
-      setIsLoading(false);
+    // Check if response is JSON
+    if (!isJsonResponse(response)) {
+      const text = await response.text();
+      console.error('Non-JSON response:', text.substring(0, 200));
+      throw new Error('Server returned non-JSON response');
     }
-  }, [getSettings, checkApiStatus]);
+
+    const data: ModelResponse = await response.json();
+    setModels(data.models?.map(model => model.name) || []);
+    setApiStatus('online');
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    setError(errorMessage);
+    setApiStatus('offline');
+    console.error('Failed to fetch models:', err);
+  } finally {
+    setIsLoading(false);
+  }
+}, [getSettings]);
   // Initialize web search when settings change
   useEffect(() => {
     const settings = getSettings();
@@ -121,29 +133,7 @@ export const useOllama = () => {
     console.log("Using Ollama API URL:", settings.apiUrl); // ✅ now inside useEffect
   }, [initializeSearch, getSettings]);
 
-const debugRequest = async (url: string, options: RequestInit) => {
-  console.log('Making request to:', url);
-  console.log('Options:', options);
-  
-  try {
-    const response = await fetch(url, options);
-    console.log('Response status:', response.status);
-    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-    
-    const text = await response.text();
-    console.log('Response text:', text);
-    
-    return {
-      ok: response.ok,
-      status: response.status,
-      text,
-      json: () => JSON.parse(text)
-    };
-  } catch (error) {
-    console.error('Request failed:', error);
-    throw error;
-  }
-};
+
 
 
   // Send messages to a model with optional web search
