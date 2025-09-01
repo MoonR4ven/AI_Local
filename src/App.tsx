@@ -13,11 +13,7 @@ function App() {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [models, setModels] = useState<ModelInfo[]>([]);
 
-  const {  isLoading, error, sendMessage, apiUrl } = useOllama();
-
-  useEffect(() => {
-    console.log("Using Ollama API URL:", apiUrl);
-  }, [apiUrl]);
+ 
 
   // Apply theme settings
   useEffect(() => {

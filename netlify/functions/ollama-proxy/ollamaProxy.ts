@@ -1,73 +1,47 @@
 import type { Handler } from '@netlify/functions';
 
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
-const NGROK_URL = process.env.NGROK_URL || 'https://8b1c1ca1a725.ngrok-free.app';
+const OLLAMA_API_URL = process.env.VITE_OLLAMA_API_URL || 'http://localhost:11434';
 
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event) => {
   try {
-    // Determine which backend to use
-    const useNgrok = process.env.USE_NGROK === 'true';
-    const baseUrl = useNgrok ? NGROK_URL : OLLAMA_URL;
-    
-    // Extract the API path correctly
-    const requestPath = event.path.replace('/.netlify/functions/ollama-proxy', '');
-    const url = `${baseUrl}${requestPath}`;
+    // Strip the function prefix to get the API path
+    // Example: '/.netlify/functions/ollama-proxy/api/tags?limit=10' => '/api/tags?limit=10'
+    const pathWithQuery = event.rawUrl.replace('/.netlify/functions/ollama-proxy', '') || '/api/tags';
+    const url = `${OLLAMA_API_URL}${pathWithQuery}`;
 
-    // Handle query parameters
-    const queryString = event.queryStringParameters 
-      ? `?${new URLSearchParams(event.queryStringParameters).toString()}`
-      : '';
-
-    const fullUrl = `${url}${queryString}`;
-
-    console.log('Proxying to:', fullUrl);
-    console.log('Method:', event.httpMethod);
-
-    // Forward the request
-    const response = await fetch(fullUrl, {
+    // Prepare fetch options
+    const options: RequestInit = {
       method: event.httpMethod,
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        ...(event.headers.authorization && { 'Authorization': event.headers.authorization })
       },
-      body: event.body,
-    });
+    };
 
-    if (!response.ok) {
-      return {
-        statusCode: response.status,
-        body: JSON.stringify({ 
-          error: `Ollama API error: ${response.status} ${response.statusText}` 
-        }),
-      };
+    // Only attach body for non-GET requests
+    if (event.httpMethod !== 'GET' && event.body) {
+      options.body = event.body;
     }
 
-    const data = await response.json();
+    // Fetch from Ollama
+    const response = await fetch(url, options);
+    const text = await response.text();
+
+    // Try parsing JSON, fallback to raw text
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { error: 'Failed to parse JSON', raw: text };
+    }
 
     return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      },
+      statusCode: response.status,
       body: JSON.stringify(data),
     };
   } catch (err: any) {
-    console.error('Proxy error:', err);
-    
     return {
       statusCode: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        error: 'Proxy error', 
-        message: err.message,
-        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
-      }),
+      body: JSON.stringify({ error: err.message }),
     };
   }
 };
