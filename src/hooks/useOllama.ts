@@ -33,11 +33,21 @@ export const useOllama = () => {
     clearSearch
   } = useWebSearch();
 
+  // Read settings from localStorage or environment (for Netlify)
   const getSettings = useCallback((): OllamaSettings => {
     try {
       const savedSettings = JSON.parse(localStorage.getItem('ollama-settings') || '{}');
+
+      // Use environment variable first, fallback to localStorage, fallback to localhost
+
+      const apiUrl =
+        import.meta.env.VITE_OLLAMA_API_URL ||
+        savedSettings.apiUrl ||
+        'http://localhost:11434';
+
+
       return {
-        apiUrl: savedSettings.apiUrl || 'http://localhost:11434',
+        apiUrl,
         enableWebSearch: savedSettings.enableWebSearch || false,
         enableAdvancedSearch: savedSettings.enableAdvancedSearch || false,
         googleApiKey: savedSettings.googleApiKey || '',
@@ -47,7 +57,8 @@ export const useOllama = () => {
       };
     } catch {
       return {
-        apiUrl: 'http://localhost:11434',
+        apiUrl: import.meta.env.VITE_OLLAMA_API_URL || 'http://localhost:11434'
+        ,
         enableWebSearch: false,
         enableAdvancedSearch: false,
         googleApiKey: '',
@@ -71,6 +82,8 @@ export const useOllama = () => {
     try {
       const settings = getSettings();
       const response = await fetch(`${settings.apiUrl}/api/tags`);
+      const text = await response.text();
+      console.log('Ollama /api/tags response:', text);
       if (!response.ok) throw new Error(`Ollama API error: ${response.statusText}`);
 
       const data: ModelResponse = await response.json();

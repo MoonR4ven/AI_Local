@@ -1,0 +1,24 @@
+[build]
+  publish = "dist"           # Your build output directory
+  functions = "netlify/functions"  # Where your functions are located
+
+[build.environment]
+  NODE_VERSION = "18"        # Specify Node.js version
+
+# Redirect API calls to your function
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/ollama-proxy/api/:splat"
+  status = 200
+
+# Optional: Redirect function calls directly
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Handle SPA routing (if using a single-page app)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

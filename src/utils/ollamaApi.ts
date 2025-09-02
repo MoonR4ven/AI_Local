@@ -40,7 +40,8 @@ class OllamaApi {
 
   constructor() {
     const settings = JSON.parse(localStorage.getItem('ollama-settings') || '{}');
-    this.baseUrl = settings.apiUrl || 'http://localhost:11434';
+    this.baseUrl = settings.apiUrl || import.meta.env.VITE_OLLAMA_API_URL
+;
   }
 
   async listModels(): Promise<OllamaModel[]> {
