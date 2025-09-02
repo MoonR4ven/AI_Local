@@ -1,10 +1,17 @@
-// types.ts
 export interface Message {
-    id: string;
-    role: 'user' | 'assistant' | 'system';
-    content: string;
-    timestamp: Date;
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: Date;
+  fileReferences?: string[]; // IDs of files referenced in this message
 }
+
+export interface MemoryFile {
+  name: string;
+  content: string;
+  type: 'txt' | 'json';
+}
+
 export interface ModelParameters {
   maxTokens: number;
   temperature: number;
@@ -15,38 +22,43 @@ export interface ModelParameters {
   presencePenalty: number;
 }
 
-
 export interface Chat {
-    id: string;
-    title: string;
-    messages: Message[];
-    model: string;
-    createdAt: Date;
-    updatedAt: Date;
+  id: string;
+  title: string;
+  messages: Message[];
+  model: string;
+  createdAt: Date;
+  updatedAt: Date;
+ files: ChatFile[];
+}
+export interface ChatFile {
+  id: string;
+  name: string;
+  content: string;
+  type: string;
 }
 
 export interface ModelInfo {
-    name: string;
-    size: string;
-    modified: Date;
+  name: string;
+  size: string;
+  modified: Date;
 }
 
 export interface DownloadableModel {
-    name: string;
-    size: string;
-    description: string;
-    requiredRAM: string;
-    popularity: number;
-    tags: string[];
+  name: string;
+  size: string;
+  description: string;
+  requiredRAM: string;
+  popularity: number;
+  tags: string[];
 }
 
-// types.ts
 export interface Settings {
   // General
   theme: 'light' | 'dark' | 'system';
   apiUrl: string;
   apiKey: string;
-  
+
   // Model Parameters
   maxTokens: number;
   temperature: number;
@@ -57,29 +69,28 @@ export interface Settings {
   presencePenalty: number;
   systemPrompt: string;
   model: string;
-  
+
   // Performance
   timeout: number;
   maxContextLength: number;
-  
+
   // Features
   enableStreaming: boolean;
   enableMemory: boolean;
   enableSearch: boolean;
-
   enableFileUpload: boolean;
   enableImageGeneration: boolean;
   enableVoiceInput: boolean;
   enableVoiceOutput: boolean;
   enableCodeExecution: boolean;
   enablePlugins: boolean;
-  
+
   // Notifications & Updates
   enableNotifications: boolean;
   enableAutoUpdates: boolean;
   enableTelemetry: boolean;
   enableExperimentalFeatures: boolean;
-  
+
   // Appearance
   language: string;
   fontSize: number;
@@ -94,7 +105,7 @@ export interface Settings {
   enableQuickActions: boolean;
   enableTooltips: boolean;
   enableKeyboardShortcuts: boolean;
-  
+
   // Data & Storage
   backupFrequency: 'daily' | 'weekly' | 'monthly' | 'never';
   exportFormat: 'json' | 'csv' | 'txt' | 'markdown';
@@ -102,7 +113,7 @@ export interface Settings {
   cloudSyncProvider: 'none' | 'google' | 'dropbox' | 'onedrive';
   enableLocalStorage: boolean;
   enableIndexedDB: boolean;
-  
+
   // Web Search
   enableWebSearch: boolean;
   googleApiKey: string;
@@ -138,22 +149,27 @@ export interface SearchContext {
   timestamp: Date;
 }
 
+export interface SearchResponse {
+  results: SearchResult[];
+  query: string;
+  timestamp: Date;
+}
+
 export interface OllamaResponse {
-    model: string;
-    created_at: string;
-    message: {
-        role: string;
-        content: string;
-    };
-    done: boolean;
+  model: string;
+  created_at: string;
+  message: {
+    role: string;
+    content: string;
+  };
+  done: boolean;
 }
 
 export interface OllamaRequest {
-    model: string;
-    messages: {
-        role: string;
-        content: string;
-    }[];
-    stream: boolean;
+  model: string;
+  messages: {
+    role: string;
+    content: string;
+  }[];
+  stream: boolean;
 }
-

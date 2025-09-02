@@ -1,0 +1,265 @@
+[
+  {
+    "name": "MP-1.90",
+    "subtitle": "Full-Core Retriever",
+    "category": "SMART SYSTEMS",
+    "price": "From \u00e2\u201a\u00ac14,200",
+    "description": "It's not flashy. It doesn't shout. It doesn't do Wi-Fi. But what it does do\u00e2\u20ac\u201dbetter than almost anything else\u00e2\u20ac\u201dis give you a perfect, uninterrupted soil core, from surface to 90 centimetres below. Yes, the whole story, from crust to subsoil, all in one go. It's like an MRI for the earth.",
+    "features": [
+      "Full-length (0\u00e2\u20ac\u201c90 cm) intact soil core for profile visibility",
+      "Centimetre-precise depth control",
+      "Obstacle detection with automatic stop",
+      "Manual core removal for sample integrity",
+      "Fits pickups, trailers, and lightweight vehicles",
+      "Upgradeable to MP-3.90 or MP-4.100"
+    ],
+    "applications": [
+      "N-min soil sampling",
+      "Academic and university research",
+      "Environmental monitoring",
+      "Soil morphology and profile analysis",
+      "Precision agriculture"
+    ],
+    "specs": {
+      "Sampling Depth": "0\u00e2\u20ac\u201c90 cm (stepless)",
+      "Sampling Type": "Single-core, full profile",
+      "Sampling Cycle Time": "16 sec/core",
+      "Power Supply": "Hydraulic (135 bar, 20 L/min, 12VDC)",
+      "Obstacle Detection": "Yes",
+      "Control Panel": "Digital",
+      "Weight": "185 kg",
+      "Mounting Options": "Pickup trucks, trailers, light agricultural vehicles"
+    },
+    "operation": [
+      "Impact Insertion: Grooved rod driven into soil using high-frequency hydraulic hammer",
+      "Hydraulic Retraction with Rotation: Rod rotated and retracted hydraulically",
+      "Core Revelation: Unbroken soil core exposed for examination",
+      "Manual Core Discharge: Core manually removed"
+    ]
+  },
+  {
+    "name": "MP-2.60",
+    "subtitle": "Mid Range MultiPRO",
+    "category": "SMART SYSTEMS",
+    "price": "From \u00e2\u201a\u00ac16,500",
+    "bestseller": true,
+    "description": "A wonderfully practical piece of machinery for N-min soil sampling. Goes down to 60 cm, gets what it needs, and carries on without asking for tea or praise. Designed to be reliable, not ridiculous.",
+    "features": [
+      "Fully automatic extraction to 60 cm",
+      "Smart logic: discards or keeps samples based on settings",
+      "Impact-driven sampling with auto-discharge",
+      "Layer separation option for horizon-specific sampling",
+      "Waterproof sample containers",
+      "Customisable sampling depth and horizon count",
+      "Obstacle detection and safe auto-shutdown",
+      "Built for real, daily use"
+    ],
+    "applications": [
+      "Nmin/Nitrate profiling",
+      "Precision agriculture",
+      "Environmental soil monitoring",
+      "Field sampling on a budget with ambitions"
+    ],
+    "specs": {
+      "Sampling Depth": "0\u00e2\u20ac\u201c60 cm",
+      "Sampling Type": "Impact-driven, fully automatic",
+      "Hammer Unit": "Hydraulic, high-frequency",
+      "Horizons": "1\u00e2\u20ac\u201c2 layers",
+      "Magazines": "3",
+      "Sampling Cycle Time": "18 sec/core",
+      "Mounting Options": "Pickup, trailer, or roadworthy vehicles",
+      "Sample Sorting": "Automatic, horizon-specific separation",
+      "Special Features": "Obstacle detection, Waterproof containers, Digital keyboard",
+      "Power Source": "Hydraulic system (135 bar, 20 l/min, 12VDC)",
+      "Weight": "200 kg"
+    }
+  },
+  {
+    "name": "MP-3.90",
+    "subtitle": "TripleLayer Pro",
+    "category": "SMART SYSTEMS",
+    "price": "From \u00e2\u201a\u00ac23,500",
+    "bestseller": true,
+    "description": "German engineering designed to extract soil samples down to 95 cm without operator effort. Capable of 3-layer separation, auto-discharge, and automatic obstacle detection.",
+    "features": [
+      "Fully automatic extraction down to 95 cm",
+      "Optional 3-layer separation for horizon-specific sampling",
+      "Takes 3 consecutive samples without leaving the seat",
+      "Auto-discharge and sample sorting during extraction",
+      "Customizable sampling depth and horizon count",
+      "Waterproof containers for sample storage",
+      "Auto-shutdown when encountering obstacles",
+      "Smart logic: discards or keeps samples based on settings",
+      "Built for serious, continuous use"
+    ],
+    "applications": [
+      "Precision agriculture",
+      "Environmental soil monitoring",
+      "Nmin/Nitrate testing",
+      "Soil profiling & research",
+      "Field work requiring speed and accuracy"
+    ],
+    "specs": {
+      "Sampling Depth": "0\u00e2\u20ac\u201c95 cm",
+      "Sampling Type": "Impact-driven, fully automatic",
+      "Hammer Unit": "Hydraulic, 2,200 strokes/min",
+      "Horizons": "1\u00e2\u20ac\u201c3 layers (user-configurable)",
+      "Magazines": "3",
+      "Sampling Cycle Time": "18 sec/core",
+      "Mounting Options": "Pickup, trailer, or light-duty vehicle",
+      "Sample Sorting": "Automatic, horizon-specific separation",
+      "Special Features": "Obstacle detection, Waterproof containers, Digital keyboard",
+      "Penetration Control": "Automatic shutdown",
+      "Power Source": "Hydraulic system (135 bar, 20 l/min, 12VDC)",
+      "Weight": "200 kg"
+    }
+  },
+  {
+    "name": "MP-4.100",
+    "subtitle": "UltraDepth MAX",
+    "category": "SMART SYSTEMS",
+    "price": "From \u00e2\u201a\u00ac25,500",
+    "description": "A fully automatic sampler that goes down to 100 cm, pulls out up to four layers, and sorts them automatically. Combines hydraulic power with intelligent soil science.",
+    "features": [
+      "Fully automatic extraction to 100 cm",
+      "Optional 4-layer separation for horizon-specific sampling",
+      "Auto-discharge and sample sorting during extraction",
+      "Smart logic: discards or keeps samples based on settings",
+      "Customizable sampling depth and horizon count",
+      "Obstacle detection and safe auto-shutdown",
+      "Waterproof sample containers",
+      "Digital keyboard for on-the-fly adjustments",
+      "Built for real, daily use"
+    ],
+    "applications": [
+      "Deep soil profiling",
+      "Environmental and agricultural research",
+      "Nmin/Nitrate testing",
+      "Precision agriculture",
+      "Field work requiring serious depth and sample fidelity"
+    ],
+    "specs": {
+      "Sampling Depth": "0\u00e2\u20ac\u201c100 cm",
+      "Sampling Type": "Impact-driven, fully automatic",
+      "Hammer Unit": "Hydraulic, high-frequency",
+      "Horizons": "1\u00e2\u20ac\u201c4 layers",
+      "Magazines": "4",
+      "Sampling Cycle Time": "22 sec/core",
+      "Mounting Options": "Pickup, trailer, or light-duty vehicle",
+      "Sample Sorting": "Automatic, horizon-specific separation",
+      "Special Features": "Obstacle detection, Waterproof containers, Digital keyboard",
+      "Power Source": "Hydraulic system (135 bar, 20 l/min, 12VDC)",
+      "Weight": "215 kg"
+    }
+  },
+  {
+    "name": "DH-1.30",
+    "subtitle": "Hydraulic Scout",
+    "category": "SMART SYSTEMS",
+    "price": "From \u00e2\u201a\u00ac8,950",
+    "description": "A robust, hydraulic soil sampler built to perform with quiet confidence and steady power. No overcomplication, just solid results. Drills smoothly up to 30 centimetres with hydraulic power.",
+    "features": [
+      "Hydraulic drive for dependable, powerful drilling",
+      "Precision millimetre depth adjustment",
+      "Not affected by vehicle suspension",
+      "Two preset depths for fast switching",
+      "Compact and portable at 45 kg",
+      "Mounts easily on a range of light vehicles"
+    ],
+    "applications": [
+      "Macronutrient soil sampling",
+      "Precision farming",
+      "Agricultural and environmental research",
+      "Soil health and nutrient monitoring"
+    ],
+    "specs": {
+      "Sampling Depth": "0\u00e2\u20ac\u201c30 cm",
+      "Sampling Type": "Single-core, fully automatic",
+      "Horizons": "1",
+      "Magazines": "1",
+      "Sampling Cycle Time": "5 sec/core",
+      "Mounting Options": "Quad, pickup, trailer, or light-duty vehicle",
+      "Control": "Electric push-button panel",
+      "Power Source": "Hydraulic engine",
+      "Weight": "45 kg"
+    }
+  },
+  {
+    "name": "DE-1.30",
+    "subtitle": "Electric Scout",
+    "category": "SMART SYSTEMS",
+    "price": "From \u00e2\u201a\u00ac12,600",
+    "description": "A compact electric soil sampler that quietly gets on with the job\u00e2\u20ac\u201ddrilling down up to 30 centimetres without fumes or noise. Clean, reliable soil sampling.",
+    "features": [
+      "Fully electric drilling for clean, precise sampling",
+      "Millimeter-precise depth adjustment",
+      "Independent of vehicle suspension",
+      "Two quick-select depth presets",
+      "Compact and lightweight at 45 kg",
+      "Runs on 24 V external battery pack (sold separately)"
+    ],
+    "applications": [
+      "Macronutrient soil sampling",
+      "Precision farming",
+      "Agricultural and environmental research",
+      "Soil health and nutrient monitoring"
+    ],
+    "specs": {
+      "Sampling Depth": "0\u00e2\u20ac\u201c30 cm",
+      "Sampling Type": "Single-core, fully automatic",
+      "Horizons": "1",
+      "Magazines": "1",
+      "Sampling Cycle Time": "5 sec/core",
+      "Mounting Options": "Quad, pickup, trailer, or light-duty vehicle",
+      "Control": "Electric push-button control panel",
+      "Operating Voltage": "24 VDC",
+      "Weight": "45 kg"
+    }
+  },
+  {
+    "name": "BOPROB III",
+    "subtitle": "The Sixteen Express",
+    "category": "SMART SYSTEMS",
+    "price": "\u00e2\u201a\u00ac28,500",
+    "description": "A trailer that takes soil samples while you drive. No stopping, no button-mashing. Tow it behind something with wheels and let it get on with the job.",
+    "features": [
+      "Hydraulic impact and rotation system",
+      "360\u00c2\u00b0 rotating crank with auto-discharge",
+      "Samples while driving\u00e2\u20ac\u201dno need to stop",
+      "7-inch touchscreen display for control and monitoring",
+      "Optional onboard camera for visual feedback",
+      "Low soil compaction from 235/60 R16 wheels",
+      "No tractor mods needed",
+      "Speed-sensitive protection against misuse"
+    ],
+    "applications": [
+      "High-throughput macronutrient sampling",
+      "Precision farming with minimal fuel use",
+      "Soil health monitoring on large acreages",
+      "Shallow horizon sampling during transit"
+    ],
+    "specs": {
+      "Sampling Depth": "10\u00e2\u20ac\u201c30 cm",
+      "Sampling Type": "Impact-driven, fully automatic",
+      "Horizons": "1",
+      "Magazines": "16",
+      "Sampling Cycle Time": "8\u00e2\u20ac\u201c10 sec/sample",
+      "Mounting Options": "Tow-behind trailer (standard hitch)",
+      "Control": "7-inch touchscreen panel",
+      "Power Source": "Hydraulic",
+      "Wheels": "235/60 R16, low soil compaction",
+      "Weight": "\u00e2\u2030\u02c6600 kg"
+    }
+  },
+  {
+    "name": "MP-2.60",
+    "subtitle": "Fully Automatic Impact-Driven Soil Sampling System",
+    "price": "$12,000",
+    "specs": [
+      "0\u00e2\u20ac\u201c60 cm sampling depth",
+      "Impact-driven sampling with auto-discharge",
+      "Smart logic for sample selection",
+      "Hydraulic hammer unit with high-frequency operation"
+    ]
+  }
+]

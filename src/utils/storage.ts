@@ -1,10 +1,14 @@
-import { Chat, ModelInfo, DownloadableModel, Settings } from '../types';
+import { Chat, ModelInfo, DownloadableModel, Settings, ChatFile } from '../types';
 
 const CHATS_STORAGE_KEY = 'ollama-chats';
 const CURRENT_CHAT_KEY = 'ollama-current-chat';
 const MODELS_STORAGE_KEY = 'ollama-models';
 const SETTINGS_STORAGE_KEY = 'ollama-settings';
 const AVAILABLE_MODELS_KEY = 'ollama-available-models';
+const MEMORY_FILES_KEY = 'ollama-memory-files';
+
+import catalogText from '../memory/catalog.txt?raw'; // Adjust if your bundler differs
+import productsJson from '../memory/products.json'; // Imports as object, but we'll stringify for storage
 
 export const storage = {
     
@@ -12,7 +16,19 @@ export const storage = {
   getChats: (): Chat[] => {
     try {
       const chats = localStorage.getItem(CHATS_STORAGE_KEY);
-      return chats ? JSON.parse(chats) : [];
+      const parsedChats = chats ? JSON.parse(chats) : [];
+      
+      // Ensure files array exists and convert date strings to Date objects
+      return parsedChats.map((chat: any) => ({
+        ...chat,
+        createdAt: new Date(chat.createdAt),
+        updatedAt: new Date(chat.updatedAt),
+        files: chat.files || [],
+        messages: chat.messages?.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        })) || []
+      }));
     } catch {
       return [];
     }
@@ -46,11 +62,76 @@ export const storage = {
     }
   },
 
+
+
+getMemoryFiles: (): MemoryFile[] => {
+    try {
+      const files = localStorage.getItem(MEMORY_FILES_KEY);
+      return files ? JSON.parse(files) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveMemoryFiles: (files: MemoryFile[]): void => {
+    try {
+      localStorage.setItem(MEMORY_FILES_KEY, JSON.stringify(files));
+    } catch (error) {
+      console.error('Failed to save memory files:', error);
+    }
+  },
+
+  initMemoryFiles: (): void => {
+    const existing = storage.getMemoryFiles();
+    if (existing.length === 0) {
+      const sampleFiles: MemoryFile[] = [
+        {
+          name: 'catalog.txt',
+          content: catalogText,
+          type: 'txt'
+        },
+        {
+          name: 'products.json',
+          content: JSON.stringify(productsJson),
+          type: 'json'
+        }
+      ];
+      storage.saveMemoryFiles(sampleFiles);
+    }
+  },
+
+  saveMemoryFile: (name: string, content: string, type: 'txt' | 'json'): void => {
+    const files = storage.getMemoryFiles();
+    const existingIndex = files.findIndex(f => f.name === name);
+    const newFile = { name, content, type };
+    if (existingIndex >= 0) {
+      files[existingIndex] = newFile; // Update
+    } else {
+      files.push(newFile); // Create
+    }
+    storage.saveMemoryFiles(files);
+  },
+
+  deleteMemoryFile: (name: string): void => {
+    const files = storage.getMemoryFiles().filter(f => f.name !== name);
+    storage.saveMemoryFiles(files);
+  },
+
+
+
+
+
+
   // Model-related methods
   getModels: (): ModelInfo[] => {
     try {
       const models = localStorage.getItem(MODELS_STORAGE_KEY);
-      return models ? JSON.parse(models) : [];
+      const parsedModels = models ? JSON.parse(models) : [];
+      
+      return parsedModels.map((model: any) => ({
+        ...model,
+        modified: new Date(model.modified)
+      }));
     } catch {
       return [];
     }
@@ -99,10 +180,25 @@ export const storage = {
       
       // Initialize with sample data if none exists
       const sampleModels: DownloadableModel[] = [
-       
         {
-          name: 'numaicaexemplu',
-          size: '13GB',
+          name: 'llama3.2:3b',
+          size: '1.8GB',
+          description: 'A fast and efficient model for general tasks',
+          requiredRAM: '8GB',
+          popularity: 92,
+          tags: ['general', 'fast']
+        },
+        {
+          name: 'mistral:7b',
+          size: '4.1GB',
+          description: 'A powerful model for complex reasoning',
+          requiredRAM: '16GB',
+          popularity: 88,
+          tags: ['reasoning', 'complex']
+        },
+        {
+          name: 'codellama:7b',
+          size: '3.8GB',
           description: 'A model specialized in code generation',
           requiredRAM: '16GB',
           popularity: 76,
@@ -126,177 +222,91 @@ export const storage = {
   },
 
   // Settings management
-getSettings: (): Settings => {
-  try {
-    const settings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (settings) return JSON.parse(settings);
+  getSettings: (): Settings => {
+    try {
+      const settings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+      if (settings) return JSON.parse(settings);
 
-    // Full default settings object
-    const defaultSettings: Settings = {
-      // General
-      theme: 'system',
-      apiUrl: 'http://localhost:11434',
-      apiKey: '',
+      // Default settings with file upload enabled
+      const defaultSettings: Settings = {
+        theme: 'system',
+        apiUrl: 'http://localhost:11434',
+        apiKey: '',
+        maxTokens: 2048,
+        temperature: 0.7,
+        topP: 1,
+        topK: 50,
+        repeatPenalty: 1,
+        frequencyPenalty: 0,
+        presencePenalty: 0,
+        systemPrompt: 'You are a helpful assistant.',
+        model: 'llama3.2:3b',
+        timeout: 30,
+        maxContextLength: 2048,
+        enableStreaming: true,
+        enableMemory: true,
+        enableSearch: false,
+        enableFileUpload: true, // Enabled by default
+        enableImageGeneration: false,
+        enableVoiceInput: false,
+        enableVoiceOutput: false,
+        enableCodeExecution: false,
+        enablePlugins: false,
+        enableNotifications: true,
+        enableAutoUpdates: false,
+        enableTelemetry: true,
+        enableExperimentalFeatures: false,
+        language: 'en',
+        fontSize: 14,
+        fontFamily: 'Arial',
+        uiScale: 1,
+        animationSpeed: 'normal',
+        enableSyntaxHighlighting: true,
+        enableLineNumbers: true,
+        enableWordWrap: true,
+        enableSpellCheck: true,
+        enableAutoComplete: true,
+        enableQuickActions: true,
+        enableTooltips: true,
+        enableKeyboardShortcuts: true,
+        backupFrequency: 'weekly',
+        exportFormat: 'json',
+        enableCloudSync: false,
+        cloudSyncProvider: 'none',
+        enableLocalStorage: true,
+        enableIndexedDB: false,
+        enableWebSearch: false,
+        googleApiKey: '',
+        googleSearchEngineId: '',
+        maxSearchResults: 3,
+        searchTimeout: 10,
+        privacyLevel: 'standard',
+        dataRetention: '30days',
+        enableModeration: true,
+        enableContentFilter: true,
+        enableRateLimiting: true,
+        enableIPFiltering: false,
+        enableAuth: false,
+        enable2FA: false,
+        enableSessionTimeout: false,
+        sessionTimeout: 15,
+        enablePasswordPolicy: false,
+        enableAuditLog: false
+      };
 
-      // Model Parameters
-      maxTokens: 2048,
-      temperature: 0.7,
-      topP: 1,
-      topK: 50,
-      repeatPenalty: 1,
-      frequencyPenalty: 0,
-      presencePenalty: 0,
-      systemPrompt: 'You are a helpful assistant.',
-      model: 'llama3.2:3b',
+      storage.saveSettings(defaultSettings);
+      return defaultSettings;
 
-      // Performance
-      timeout: 30,
-      maxContextLength: 2048,
-
-      // Features
-      enableStreaming: true,
-      enableMemory: true,
-      enableSearch: false,
-      enableFileUpload: false,
-      enableImageGeneration: false,
-      enableVoiceInput: false,
-      enableVoiceOutput: false,
-      enableCodeExecution: false,
-      enablePlugins: false,
-
-      // Notifications & Updates
-      enableNotifications: true,
-      enableAutoUpdates: false,
-      enableTelemetry: true,
-      enableExperimentalFeatures: false,
-
-      // Appearance
-      language: 'en',
-      fontSize: 14,
-      fontFamily: 'Arial',
-      uiScale: 1,
-      animationSpeed: 'normal',
-      enableSyntaxHighlighting: true,
-      enableLineNumbers: true,
-      enableWordWrap: true,
-      enableSpellCheck: true,
-      enableAutoComplete: true,
-      enableQuickActions: true,
-      enableTooltips: true,
-      enableKeyboardShortcuts: true,
-
-      // Data & Storage
-      backupFrequency: 'weekly',
-      exportFormat: 'json',
-      enableCloudSync: false,
-      cloudSyncProvider: 'none',
-      enableLocalStorage: true,
-      enableIndexedDB: false,
-
-      // Web Search
-      enableWebSearch: false,
-      googleApiKey: '',
-      googleSearchEngineId: '',
-      maxSearchResults: 3,
-      searchTimeout: 10,
-
-      // Privacy & Security
-      privacyLevel: 'standard',
-      dataRetention: '30days',
-      enableModeration: true,
-      enableContentFilter: true,
-      enableRateLimiting: true,
-      enableIPFiltering: false,
-      enableAuth: false,
-      enable2FA: false,
-      enableSessionTimeout: false,
-      sessionTimeout: 15,
-      enablePasswordPolicy: false,
-      enableAuditLog: false
-    };
-
-    storage.saveSettings(defaultSettings);
-    return defaultSettings;
-
-  } catch {
-    // Return the same full defaults even if localStorage fails
-    return {
-      // copy the same object here as above
-      theme: 'system',
-      apiUrl: 'http://localhost:11434',
-      apiKey: '',
-
-      maxTokens: 2048,
-      temperature: 0.7,
-      topP: 1,
-      topK: 50,
-      repeatPenalty: 1,
-      frequencyPenalty: 0,
-      presencePenalty: 0,
-      systemPrompt: 'You are a helpful assistant.',
-      model: 'llama3.2:3b',
-
-      timeout: 30,
-      maxContextLength: 2048,
-
-      enableStreaming: true,
-      enableMemory: true,
-      enableSearch: false,
-      enableFileUpload: false,
-      enableImageGeneration: false,
-      enableVoiceInput: false,
-      enableVoiceOutput: false,
-      enableCodeExecution: false,
-      enablePlugins: false,
-
-      enableNotifications: true,
-      enableAutoUpdates: false,
-      enableTelemetry: true,
-      enableExperimentalFeatures: false,
-
-      language: 'en',
-      fontSize: 14,
-      fontFamily: 'Arial',
-      uiScale: 1,
-      animationSpeed: 'normal',
-      enableSyntaxHighlighting: true,
-      enableLineNumbers: true,
-      enableWordWrap: true,
-      enableSpellCheck: true,
-      enableAutoComplete: true,
-      enableQuickActions: true,
-      enableTooltips: true,
-      enableKeyboardShortcuts: true,
-
-      backupFrequency: 'weekly',
-      exportFormat: 'json',
-      enableCloudSync: false,
-      cloudSyncProvider: 'none',
-      enableLocalStorage: true,
-      enableIndexedDB: false,
-
-      enableWebSearch: false,
-      googleApiKey: '',
-      googleSearchEngineId: '',
-      maxSearchResults: 3,
-      searchTimeout: 10,
-
-      privacyLevel: 'standard',
-      dataRetention: '30days',
-      enableModeration: true,
-      enableContentFilter: true,
-      enableRateLimiting: true,
-      enableIPFiltering: false,
-      enableAuth: false,
-      enable2FA: false,
-      enableSessionTimeout: false,
-      sessionTimeout: 15,
-      enablePasswordPolicy: false,
-      enableAuditLog: false
-    };
-  }
-},
-
+    } catch {
+      return {
+        // Return minimal defaults if localStorage fails
+        theme: 'system',
+        apiUrl: 'http://localhost:11434',
+        enableFileUpload: true,
+        // ... other minimal defaults
+      } as Settings;
+    }
+  },
 
   saveSettings: (settings: Settings): void => {
     try {
@@ -319,9 +329,10 @@ getSettings: (): Settings => {
         {
           name: 'mistral:7b',
           size: '4.1 GB',
-          modified: new Date(Date.now() - 86400000) // 1 day ago
+          modified: new Date(Date.now() - 86400000)
         }
       ];
+      storage.initMemoryFiles();
       storage.saveModels(sampleModels);
     }
   },
@@ -334,6 +345,7 @@ getSettings: (): Settings => {
       localStorage.removeItem(MODELS_STORAGE_KEY);
       localStorage.removeItem(SETTINGS_STORAGE_KEY);
       localStorage.removeItem(AVAILABLE_MODELS_KEY);
+      localStorage.removeItem(MEMORY_FILES_KEY);
     } catch (error) {
       console.error('Failed to clear storage:', error);
     }

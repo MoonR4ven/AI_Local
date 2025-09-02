@@ -44,7 +44,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
     repeatPenalty: 1.1,
     frequencyPenalty: 0,
     presencePenalty: 0,
-    systemPrompt: 'You are a helpful assistant.',
+    systemPrompt: 'You have access to the following recent web search results from September 02, 2025. Use ONLY this provided context to answer any questions requiring up-to-date or real-time information. Do not use your prior knowledge or claim you lack internet access—these are fresh search results. If the context doesn\'t contain relevant information, say so and provide the best answer possible without fabricating details.',
     model: '',
     timeout: 300,
 

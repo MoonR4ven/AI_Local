@@ -60,7 +60,8 @@ function App() {
       messages: [],
       model: selectedModel || models[0]?.name || '',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      files: [] // Add this
     };
 
     setChats(prev => [newChat, ...prev]);
