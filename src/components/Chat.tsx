@@ -349,7 +349,7 @@ export const Chat: React.FC<ChatProps> = ({ chat, onUpdateChat, selectedModel })
             <Message
               key={msg.id}
               message={msg}
-             
+              files={msg.fileReferences ? (chat.files || []).filter((f) => msg.fileReferences?.includes(f.id)) : []}
             />
           ))
         )}
